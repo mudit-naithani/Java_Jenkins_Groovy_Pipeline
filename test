@@ -1,0 +1,40 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: jenkinsjobservice
+spec:
+  type: NodePort
+  selector:
+    app: jenkins-job
+  ports:
+    - #Port accessible inside cluster
+      port: 8085
+      # Port to forward inside container
+      targetPort: 8085
+      #Port accessible outside cluster
+      nodePort: 30002
+
+
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: jenkins-job
+spec: 
+  replicas: 5
+  selector:
+    matchLabels:
+      app: jenkins-job
+  template: 
+    metadata: 
+      labels: 
+        app: jenkins-job
+    spec: 
+      containers: 
+        - 
+          image: muditnaithani/docker-spring-boot-new
+          name: jenkins-job
+          ports: 
+            - 
+              containerPort: 8085
